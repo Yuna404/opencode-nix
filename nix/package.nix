@@ -41,8 +41,13 @@ appimageTools.wrapType2 {
     install -Dm444 ${desktopItem}/share/applications/*.desktop \
       -t $out/share/applications
 
-    install -Dm444 ${extracted}/ai.opencode.desktop.png \
-      $out/share/pixmaps/${pname}.png
+    icon=$(find ${extracted}/usr/share/icons -name '*.png' 2>/dev/null | sort -V | tail -n1)
+    if [ -z "$icon" ]; then
+      icon=$(find ${extracted} -maxdepth 1 -name '*.png' | head -n1)
+    fi
+    if [ -n "$icon" ]; then
+      install -Dm444 "$icon" $out/share/pixmaps/${pname}.png
+    fi
   '';
 
   meta = {
